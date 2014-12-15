@@ -8,7 +8,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
-//import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.SimpleLocationOverlay;
 import org.osmdroid.views.util.constants.MapViewConstants;
 import org.xmlpull.v1.XmlPullParserException;
@@ -32,6 +32,7 @@ public class MapActivity extends Activity implements MapViewConstants {
     private MapView mapView;
     private MapController mapController;
     //private ItemizedOverlayWithFocus<OverlayItem> mMyLocationOverlay;
+    private ScaleBarOverlay mScaleBarOverlay;
     protected ResourceProxy mResourceProxy;
 
     /** Called when the activity is first created. */
@@ -103,15 +104,14 @@ public class MapActivity extends Activity implements MapViewConstants {
 
         mapController = (MapController)this.mapView.getController();
         mapController.setZoom(13);
-        GeoPoint gPt = new GeoPoint(51500000, -150000);
-        //Centre map near to Hyde Park Corner, London
+        GeoPoint gPt = new GeoPoint(50833333, 3266667);
         mapController.setCenter(gPt);
 
         //this.mMyLocationOverlay = new SimpleLocationOverlay(this);
         //this.mapView.getOverlays().add(mMyLocationOverlay);
 
-        //this.mScaleBarOverlay = new ScaleBarOverlay(this);
-        //this.mapView.getOverlays().add(mScaleBarOverlay);
+        this.mScaleBarOverlay = new ScaleBarOverlay(this);
+        this.mapView.getOverlays().add(mScaleBarOverlay);
 
         loadPage();
     }
