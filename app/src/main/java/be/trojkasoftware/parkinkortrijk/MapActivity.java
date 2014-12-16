@@ -51,57 +51,6 @@ public class MapActivity extends Activity implements MapViewConstants {
 
         mResourceProxy = new ResourceProxyImpl(this.getLayoutInflater().getContext().getApplicationContext());
 
-
-//		/* Itemized Overlay */
-//        {
-//			/* Create a static ItemizedOverlay showing some Markers on various cities. */
-//            final ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-//            items.add(new OverlayItem("Hannover", "Tiny SampleDescription", new GeoPoint(52370816,
-//                    9735936))); // Hannover
-//            items.add(new OverlayItem("Kortrijk", "P Schouwburg", new GeoPoint(50.82612384626342,
-//                    3.26671018966681))); // Kortrijk
-//            //items.add(new OverlayItem("Berlin", "This is a relatively short SampleDescription.",
-//            //        new GeoPoint(52518333, 13408333))); // Berlin
-//            //items.add(new OverlayItem(
-//            //        "Washington",
-//            //        "This SampleDescription is a pretty long one. Almost as long as a the great wall in china.",
-//            //        new GeoPoint(38895000, -77036667))); // Washington
-//            //items.add(new OverlayItem("San Francisco", "SampleDescription", new GeoPoint(37779300,
-//            //        -122419200))); // San Francisco
-//
-//			/* OnTapListener for the Markers, shows a simple Toast. */
-//            ItemizedOverlayWithFocus<OverlayItem> myLocationOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
-//                    new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-//                        @Override
-//                        public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-//                            Toast.makeText(
-//                                    context,
-//                                    "Item '" + item.getTitle() + "' (index=" + index
-//                                            + ") got single tapped up", Toast.LENGTH_LONG).show();
-//                            return true;
-//                        }
-//
-//                        @Override
-//                        public boolean onItemLongPress(final int index, final OverlayItem item) {
-//                            Toast.makeText(
-//                                    context,
-//                                    "Item '" + item.getTitle() + "' (index=" + index
-//                                            + ") got long pressed", Toast.LENGTH_LONG).show();
-//                            return false;
-//                        }
-//                    }, mResourceProxy);
-//
-//            myLocationOverlay.setFocusItemsOnTap(true);
-//            myLocationOverlay.setFocusedItem(0);
-//
-//            mapView.getOverlays().add(myLocationOverlay);
-//
-//            //mRotationGestureOverlay = new RotationGestureOverlay(context, mMapView);
-//            //mRotationGestureOverlay.setEnabled(false);
-//            //mapView.getOverlays().add(mRotationGestureOverlay);
-//        }
-
-
         mapController = (MapController)this.mapView.getController();
         mapController.setZoom(13);
         GeoPoint gPt = new GeoPoint(50833333, 3266667);
@@ -117,7 +66,6 @@ public class MapActivity extends Activity implements MapViewConstants {
     }
 
     public void loadPage() {
-        //new DownloadXmlTask().execute("http://stackoverflow.com/feeds/tag?tagnames=android&sort=newest");
         //new DownloadXmlTask().execute("http://www.parkodata.be/OpenData/parko_info.xml");
         new DownloadXmlTask().execute("parko_info.xml");
     }
@@ -143,9 +91,9 @@ public class MapActivity extends Activity implements MapViewConstants {
 
         @Override
         protected void onPostExecute(List<ParkoDataParser.Entry> result) {
-		/* Itemized Overlay */
+		    /* Itemized Overlay */
             {
-			/* Create a static ItemizedOverlay showing some Markers on various cities. */
+			    /* Create a static ItemizedOverlay showing some Markers on various cities. */
                 final ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
                 for(ParkoDataParser.Entry entry : result) {
                     items.add(new OverlayItem(entry.name,
@@ -154,7 +102,7 @@ public class MapActivity extends Activity implements MapViewConstants {
                                     Double.parseDouble(entry.longitude))));
                 }
 
-			/* OnTapListener for the Markers, shows a simple Toast. */
+			    /* OnTapListener for the Markers, shows a simple Toast. */
                 ItemizedOverlayWithFocus<OverlayItem> myLocationOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
                         new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
                             @Override
@@ -193,8 +141,6 @@ public class MapActivity extends Activity implements MapViewConstants {
         ParkoDataParser parkoDataXmlParser = new ParkoDataParser();
         List<ParkoDataParser.Entry> entries = null;
 
-        StringBuilder htmlString = new StringBuilder();
-
         try {
             stream = downloadAsset(assetString);
             entries = parkoDataXmlParser.parse(stream);
@@ -206,16 +152,6 @@ public class MapActivity extends Activity implements MapViewConstants {
             }
         }
 
-//        for (ParkoDataParser.Entry entry : entries) {
-//            htmlString.append("<p><a href='");
-//            htmlString.append(entry.link);
-//            htmlString.append("'>" + entry.title + "</a></p>");
-//            // If the user set the preference to include summary text,
-//            // adds it to the display.
-////            if (pref) {
-////                htmlString.append(entry.summary);
-////            }
-//        }
         return entries;
     }
 
@@ -234,47 +170,17 @@ public class MapActivity extends Activity implements MapViewConstants {
         InputStream stream = null;
         ParkoDataParser parkoDataXmlParser = new ParkoDataParser();
         List<ParkoDataParser.Entry> entries = null;
-//        String title = null;
-//        String url = null;
-//        String summary = null;
-//        Calendar rightNow = Calendar.getInstance();
-//        DateFormat formatter = new SimpleDateFormat("MMM dd h:mmaa");
-
-//        // Checks whether the user set the preference to include summary text
-//        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-//        boolean pref = sharedPrefs.getBoolean("summaryPref", false);
-
-        StringBuilder htmlString = new StringBuilder();
-//        htmlString.append("<h3>" + getResources().getString(R.string.page_title) + "</h3>");
-//        htmlString.append("<em>" + getResources().getString(R.string.updated) + " " +
-//                formatter.format(rightNow.getTime()) + "</em>");
 
         try {
             stream = downloadUrl(urlString);
             entries = parkoDataXmlParser.parse(stream);
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
+
         } finally {
             if (stream != null) {
                 stream.close();
             }
         }
 
-//        // StackOverflowXmlParser returns a List (called "entries") of Entry objects.
-//        // Each Entry object represents a single post in the XML feed.
-//        // This section processes the entries list to combine each entry with HTML markup.
-//        // Each entry is displayed in the UI as a link that optionally includes
-//        // a text summary.
-//        for (ParkoDataParser.Entry entry : entries) {
-//            htmlString.append("<p><a href='");
-//            htmlString.append(entry.link);
-//            htmlString.append("'>" + entry.title + "</a></p>");
-//            // If the user set the preference to include summary text,
-//            // adds it to the display.
-////            if (pref) {
-////                htmlString.append(entry.summary);
-////            }
-//        }
         return entries;
     }
 
@@ -287,7 +193,7 @@ public class MapActivity extends Activity implements MapViewConstants {
         //conn.setConnectTimeout(15000 /* milliseconds */);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
-        // Starts the query
+
         conn.connect();
         InputStream stream = conn.getInputStream();
         return stream;
