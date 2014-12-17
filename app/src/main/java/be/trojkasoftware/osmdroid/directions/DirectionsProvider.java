@@ -7,12 +7,16 @@ import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DirectionsProvider {
 
     public DirectionsProvider () {
         wayPoints = new ArrayList<GeoPoint>();
+    }
+
+    public void clearWayPoints()
+    {
+        wayPoints.clear();
     }
 
     public void addWayPoint(GeoPoint wayPoint)

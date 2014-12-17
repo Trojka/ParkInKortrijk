@@ -88,28 +88,37 @@ public class MapActivity extends Activity implements MapViewConstants {
         new DownloadXmlTask().execute("parko_info.xml");
     }
 
-    private class GetDirections extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
+    class DirectionsResult
+    {
+        public Road road;
+        public ArrayList<GeoPoint> wayPoints;
+    }
+
+    private class GetDirections extends AsyncTask<ArrayList<GeoPoint>, Void, DirectionsResult> {
         @Override
-        protected Road doInBackground(ArrayList<GeoPoint>... waypoints) {
+        protected DirectionsResult doInBackground(ArrayList<GeoPoint>... waypoints) {
 
             DirectionsProvider directionsProvider = new DirectionsProvider();
             directionsProvider.addWayPoints(waypoints[0]);
 
-            Road returnValue = directionsProvider.getDirections();
+            DirectionsResult returnValue = new DirectionsResult();
+            returnValue.road = directionsProvider.getDirections();
+            returnValue.wayPoints = waypoints[0];
 
             return returnValue;
         }
 
         @Override
-        protected void onPostExecute(Road result) {
+        protected void onPostExecute(DirectionsResult result) {
             DirectionsMapVisualizer visualizer = new DirectionsMapVisualizer(MapActivity.this.mapView, MapActivity.this);
 
             //Polyline roadLine = visualizer.getRouteOverlay(result);
             //mapView.getOverlays().add(roadLine);
 
-            FolderOverlay instructionPoints = visualizer.getInstructionsOverlay(result);
-            mapView.getOverlays().add(instructionPoints);
+            //FolderOverlay instructionPoints = visualizer.getInstructionsOverlay(result);
+            //mapView.getOverlays().add(instructionPoints);
 
+            visualizer.addToMapFromRoad(result.road, result.wayPoints);
         }
 
     }
