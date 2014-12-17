@@ -11,9 +11,18 @@ import java.util.List;
 
 public class DirectionsProvider {
 
-    public void setWayPoints(ArrayList<GeoPoint> wayPoints)
+    public DirectionsProvider () {
+        wayPoints = new ArrayList<GeoPoint>();
+    }
+
+    public void addWayPoint(GeoPoint wayPoint)
     {
-        this.wayPoints = wayPoints;
+        this.wayPoints.add(wayPoint);
+    }
+
+    public void addWayPoints(ArrayList<GeoPoint> wayPoints)
+    {
+        this.wayPoints.addAll(wayPoints);
     }
 
     public ArrayList<GeoPoint> getWayPoints()

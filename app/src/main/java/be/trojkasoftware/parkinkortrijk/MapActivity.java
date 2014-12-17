@@ -1,6 +1,9 @@
 package be.trojkasoftware.parkinkortrijk;
 
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.bonuspack.overlays.FolderOverlay;
+import org.osmdroid.bonuspack.overlays.Polyline;
+import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -26,6 +29,9 @@ import java.util.ArrayList;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+
+import be.trojkasoftware.osmdroid.directions.DirectionsMapVisualizer;
+import be.trojkasoftware.osmdroid.directions.DirectionsProvider;
 
 public class MapActivity extends Activity implements MapViewConstants {
 
@@ -53,21 +59,59 @@ public class MapActivity extends Activity implements MapViewConstants {
 
         mapController = (MapController)this.mapView.getController();
         mapController.setZoom(13);
-        GeoPoint gPt = new GeoPoint(50833333, 3266667);
-        mapController.setCenter(gPt);
+        GeoPoint geoLocKortrijk = new GeoPoint(50833333, 3266667);
+        GeoPoint geoLocBrugge =   new GeoPoint(51130000, 3140007);
+        mapController.setCenter(geoLocKortrijk);
 
         //this.mMyLocationOverlay = new SimpleLocationOverlay(this);
         //this.mapView.getOverlays().add(mMyLocationOverlay);
 
         this.mScaleBarOverlay = new ScaleBarOverlay(this);
-        this.mapView.getOverlays().add(mScaleBarOverlay);
+        //this.mapView.getOverlays().add(mScaleBarOverlay);
 
-        loadPage();
+        //loadPage();
+        loadDirections();
+    }
+
+    public void loadDirections() {
+        GeoPoint geoLocKortrijk = new GeoPoint(50833333, 3266667);
+        GeoPoint geoLocBrugge =   new GeoPoint(51130000, 3140007);
+
+        ArrayList<GeoPoint> wayPoints = new ArrayList<GeoPoint>();
+        wayPoints.add(geoLocKortrijk);
+        wayPoints.add(geoLocBrugge);
+        new GetDirections().execute(wayPoints);
     }
 
     public void loadPage() {
         //new DownloadXmlTask().execute("http://www.parkodata.be/OpenData/parko_info.xml");
         new DownloadXmlTask().execute("parko_info.xml");
+    }
+
+    private class GetDirections extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
+        @Override
+        protected Road doInBackground(ArrayList<GeoPoint>... waypoints) {
+
+            DirectionsProvider directionsProvider = new DirectionsProvider();
+            directionsProvider.addWayPoints(waypoints[0]);
+
+            Road returnValue = directionsProvider.getDirections();
+
+            return returnValue;
+        }
+
+        @Override
+        protected void onPostExecute(Road result) {
+            DirectionsMapVisualizer visualizer = new DirectionsMapVisualizer(MapActivity.this.mapView, MapActivity.this);
+
+            //Polyline roadLine = visualizer.getRouteOverlay(result);
+            //mapView.getOverlays().add(roadLine);
+
+            FolderOverlay instructionPoints = visualizer.getInstructionsOverlay(result);
+            mapView.getOverlays().add(instructionPoints);
+
+        }
+
     }
 
     // Implementation of AsyncTask used to download XML feed from stackoverflow.com.
