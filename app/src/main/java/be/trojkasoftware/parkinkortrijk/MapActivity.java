@@ -69,8 +69,8 @@ public class MapActivity extends Activity implements MapViewConstants {
         this.mScaleBarOverlay = new ScaleBarOverlay(this);
         //this.mapView.getOverlays().add(mScaleBarOverlay);
 
-        //loadPage();
-        loadDirections();
+        loadPage();
+        //loadDirections();
     }
 
     public void loadDirections() {
